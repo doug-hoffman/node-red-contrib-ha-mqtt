@@ -10,8 +10,11 @@ module.exports = function (RED) {
             const ha = new HomeAssistant(this, cfg, deviceNode)
             const node = this
             node.on('input', function (msg) {
-                const { payload, attributes } = msg
+                const { payload, attributes, config } = msg
                 try {
+                    if (config) {
+                        ha.override_config(config)
+                    }
                     if (!ha.isEmpty(payload)) {
                         ha.publish(ha.config.state_topic, payload, RED._(`node-red-contrib-ha-mqtt/common:publish.state`))
                     }
