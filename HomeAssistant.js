@@ -15,6 +15,7 @@ module.exports = class HomeAssistant {
     this.device_info = device_info
     node.config = cfg.config
     this.node = node
+    this.config_override = {}
     const { name } = cfg
     const entity_id = object_id(name)
     const type = node.type.replace('ha-mqtt-', '')
@@ -90,6 +91,9 @@ module.exports = class HomeAssistant {
       if (this.node.config) {
         config = Object.assign(config, JSON.parse(this.node.config))
       }
+      if (this.config_override) {
+        config = Object.assign(config, this.config_override)
+      }
       this.publish_config(config)
       callback()
     }
@@ -102,6 +106,11 @@ module.exports = class HomeAssistant {
     DiscoveryDevice[node_id]()
   }
 
+  override_config(config) {
+    this.config_override = config
+    DiscoveryDevice[node_id]()
+  }
+  
   publish_config(data) {
     const { name, unique_id, discovery_topic, state_topic, json_attr_t } = this.config
     const mergeConfig = Object.assign({
