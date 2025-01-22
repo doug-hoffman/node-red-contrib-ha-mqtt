@@ -107,6 +107,7 @@ module.exports = class HomeAssistant {
   }
 
   override_config(config) {
+    const node_id = this.node.id
     this.config_override = config
     DiscoveryDevice[node_id]()
   }
